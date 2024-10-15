@@ -1,8 +1,6 @@
 package Lab.Model;
 
 import lombok.*;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.util.List;
@@ -15,26 +13,30 @@ import java.util.List;
  */
 
 @Entity
-//For the sake of brevity, the following 4 annotations tell Lombok to generate boilerplate code at compile-time.
+// For the sake of brevity, the following 4 annotations tell Lombok to generate boilerplate code at compile-time.
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 public class Album {
-    //The GeneratedValue annotation allows for Spring to automatically generate a unique ID.
+    // The GeneratedValue annotation allows for Spring to automatically generate a unique ID.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long albumId;
+
     private String title;
 
     /**
-     * Review the other model classes to see examples of annotations that link entities.
+     * Many albums may be created by one artist. Define the ManyToOne relationship here.
      */
+    @ManyToOne
+    @JoinColumn(name = "artist_fk")  // Creates the foreign key column in the album table
     private Artist artist;
 
     /**
-     * Review the other model classes to see examples of annotations that link entities.
+     * One album can have many songs. Define the OneToMany relationship here.
      */
+    @OneToMany(mappedBy = "album", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Song> songs;
 
     public Album(String title) {
@@ -52,26 +54,3 @@ public class Album {
                 '}';
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
